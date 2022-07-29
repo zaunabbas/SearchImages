@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PixabaySearch</string>
+    <string name="label_no_data_found">No Data Found.</string>
+    <string name="label_empty_subtitle">Search images by typing the keywords.</string>
+    <string name="ok">OK</string>
+    <string name="title_search">Search</string>
+    <string name="title_detail">detail</string>
+    <string name="search">search</string>
+    <string name="search_hint">Search here…</string>
+    <string name="no">No</string>
+    <string name="want_to_open_details">Are you sure you want to open the details?</string>
+    <string name="yes">yes</string>
+</resources>
