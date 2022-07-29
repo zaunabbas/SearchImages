@@ -1,7 +1,6 @@
 package com.payback.android.pixabay.data.remote
 
-import com.payback.android.pixabay.data.SearchResponse
-import com.payback.android.pixabay.data.SearchResult
+import com.payback.android.pixabay.data.local.SearchResult
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -1,7 +1,9 @@
 package com.payback.android.pixabay.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -56,6 +58,11 @@ fun Activity.showConfirmationDialog(
             .setNegativeButton(callingContext.getString(R.string.no), null)
             .show()
     }
+}
 
+fun Context.showToast(message: String) {
+    this.let { callingContext ->
+        Toast.makeText(callingContext, message, Toast.LENGTH_LONG).show()
+    }
 }
 

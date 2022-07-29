@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.payback.android.pixabay.data.SearchResult
+import com.payback.android.pixabay.data.local.SearchResult
 import com.payback.android.pixabay.databinding.RowSearchItemBinding
 import com.payback.android.pixabay.view.ui.search.adapter.OnItemClickListener
 
