@@ -1,26 +1,11 @@
-package com.payback.android.pixabay.data
+package com.payback.android.pixabay.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-import java.util.*
 import javax.annotation.concurrent.Immutable
 
-data class SearchResponse<T>(
-    val total: Long,
-    val totalHits: Long,
-    @SerializedName("hits")
-    val result: List<T>
-)
-
-data class SearchErrorResponse(
-    @SerializedName("error_code")
-    val errorCode: Int,
-    val error: String
-)
-
-@Entity
+@Entity(tableName = "search_results")
 @Immutable
 data class SearchResult(
     @PrimaryKey
@@ -64,3 +49,10 @@ data class SearchResult(
     }
 
 }
+
+@Entity(tableName = "search_query_results", primaryKeys = ["searchQuery", "searchedDataId"])
+data class SearchQueryResult(
+    val searchQuery: String,
+    val searchedDataId: Long,
+    val queryPosition: Int
+)

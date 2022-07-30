@@ -19,19 +19,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.payback.android.pixabay.R
-import com.payback.android.pixabay.data.SearchResult
+import com.payback.android.pixabay.data.local.SearchResult
 import com.payback.android.pixabay.databinding.FragmentSearchBinding
-import com.payback.android.pixabay.util.BundleConstants.Companion.imageData
+import com.payback.android.pixabay.util.BundleConstants.Companion.IMAGE_DATA
 import com.payback.android.pixabay.util.showConfirmationDialog
 import com.payback.android.pixabay.util.showErrorMessageInDialog
-import com.payback.android.pixabay.view.ui.search.adapter.SearchListAdapter
 import com.payback.android.pixabay.view.ui.search.adapter.OnItemClickListener
+import com.payback.android.pixabay.view.ui.search.adapter.SearchListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(), OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -78,46 +80,87 @@ class SearchFragment : Fragment(), OnItemClickListener, SwipeRefreshLayout.OnRef
 
     private fun initAdapter() {
         //initAdapter
-        mAdapter = SearchListAdapter(arrayListOf()).apply {
+        mAdapter = SearchListAdapter().apply {
             listener = this@SearchFragment
         }
         binding.list.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.list.adapter = mAdapter
-
-        mAdapter.registerAdapterDataObserver(object :
-            RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                binding.emptyView.clEmptyCont.isVisible = mAdapter.itemCount == 0
-            }
-        })
         //
     }
 
     private fun searchImages(query: String) {
-        searchViewModel.searchImages(query)
+        searchViewModel.onSearchQuerySubmit(query)
     }
 
     private fun observeData() {
-        lifecycleScope.launchWhenCreated {
-            searchViewModel.searchImages.collectLatest {
-                mAdapter.submitRefreshList(it)
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            searchViewModel.searchResult.collectLatest {
+                mAdapter.submitData(it)
             }
         }
     }
 
     private fun observeState() {
 
-        //Observer loading state while fetching data from API.
-        lifecycleScope.launchWhenCreated {
-            searchViewModel.isLoading.collectLatest {
-
-                binding.swipe.isRefreshing = it
-
-                // If api call ends with error, showErrorMessage Else clear the UrlField.
-                if (searchViewModel.searchError.value.isNotEmpty()) {
-                    requireActivity().showErrorMessageInDialog(errorMessage = searchViewModel.searchError.value)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            mAdapter.loadStateFlow
+                .distinctUntilChangedBy { it.source.refresh }
+                .filter { it.source.refresh is LoadState.NotLoading }
+                .collect {
+                    if (searchViewModel.pendingScrollToTopAfterNewQuery) {
+                        binding.list.scrollToPosition(0)
+                        searchViewModel.pendingScrollToTopAfterNewQuery = false
+                    }
+                    if (searchViewModel.pendingScrollToTopAfterRefresh &&
+                        it.mediator?.refresh is LoadState.NotLoading
+                    ) {
+                        binding.list.scrollToPosition(0)
+                        searchViewModel.pendingScrollToTopAfterRefresh = false
+                    }
                 }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            mAdapter.loadStateFlow.collect { loadState ->
+
+                binding.swipe.isRefreshing = false
+                searchViewModel.refreshInProgress = false
+                binding.emptyView.clEmptyCont.isVisible = false
+
+                when (val refresh = loadState.mediator?.refresh) {
+                    is LoadState.Loading -> {
+                        binding.swipe.isRefreshing = true
+
+                        searchViewModel.refreshInProgress = true
+                        searchViewModel.pendingScrollToTopAfterRefresh = true
+                    }
+
+                    is LoadState.NotLoading -> {
+
+                        searchViewModel.newQueryInProgress = false
+                    }
+
+                    is LoadState.Error -> {
+
+                        val noCachedResult =
+                            mAdapter.itemCount < 1 && loadState.source.append.endOfPaginationReached
+
+                        if (noCachedResult) {
+                            binding.emptyView.clEmptyCont.isVisible = true
+                            /*requireContext().showToast(
+                                "Error while fetching data."
+                            )*/
+                        }
+
+                        searchViewModel.newQueryInProgress = false
+                        searchViewModel.pendingScrollToTopAfterRefresh = false
+
+                    }
+                    null -> {
+                        // do nothing
+                    }
+                }
+
             }
         }
     }
@@ -128,7 +171,7 @@ class SearchFragment : Fragment(), OnItemClickListener, SwipeRefreshLayout.OnRef
             message = getString(R.string.want_to_open_details)
         ) { dialog, _ ->
             val bundle = Bundle()
-            bundle.putSerializable(imageData, searchResult)
+            bundle.putSerializable(IMAGE_DATA, searchResult)
             findNavController().navigate(
                 R.id.action_navigation_search_to_navigation_details,
                 bundle
@@ -218,7 +261,7 @@ class SearchFragment : Fragment(), OnItemClickListener, SwipeRefreshLayout.OnRef
     }
 
     override fun onRefresh() {
-        searchViewModel.searchRefresh()
+        mAdapter.refresh()
     }
 
 }

@@ -1,7 +1,6 @@
 package com.payback.android.pixabay.view.ui.detail
 
 import android.os.Bundle
-import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.payback.android.pixabay.R
-import com.payback.android.pixabay.data.SearchResult
+import com.payback.android.pixabay.data.local.SearchResult
 import com.payback.android.pixabay.databinding.FragmentDetailBinding
 import com.payback.android.pixabay.util.BundleConstants
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +27,7 @@ class DetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            searchResult = it.getSerializable(BundleConstants.imageData) as SearchResult
+            searchResult = it.getSerializable(BundleConstants.IMAGE_DATA) as SearchResult
         }
     }
 
@@ -53,6 +52,7 @@ class DetailFragment : Fragment() {
 
     private fun showDetails() {
         Glide.with(requireContext()).load(searchResult.largeImageURL)
+            .error(R.drawable.ic_baseline_broken_image_24)
             .into(binding.imageView)
 
         binding.tvLikesCount.text = searchResult.likes.toString()

@@ -1,6 +1,7 @@
 package com.payback.android.pixabay.di
 
 import android.app.Application
+import com.payback.android.pixabay.data.local.AppDatabase
 import com.payback.android.pixabay.data.remote.Api
 import com.payback.android.pixabay.data.local.PixabaySearchDao
 import com.payback.android.pixabay.domain.repository.SearchRepository
@@ -18,9 +19,8 @@ object RepositoryModule {
     @ViewModelScoped
     fun provideSearchRepository(
         api: Api,
-        pixabaySearchDao: PixabaySearchDao,
-        application: Application
+        pixabaySearchDb: AppDatabase,
     ): SearchRepository {
-        return SearchRepository(api, pixabaySearchDao, application)
+        return SearchRepository(api, pixabaySearchDb)
     }
 }
