@@ -30,7 +30,7 @@ object PersistenceModule {
 
     @Provides
     @Singleton
-    fun providePosterDao(appDatabase: AppDatabase): PixabaySearchDao {
+    fun provideSearchDao(appDatabase: AppDatabase): PixabaySearchDao {
         return appDatabase.pixabaySearchDao()
     }
 }

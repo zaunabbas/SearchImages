@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 class SearchRepository @Inject constructor(
     private val apiService: Api,
-    private val pixabaySearchDb: AppDatabase,
-    private val application: Application
+    private val pixabaySearchDb: AppDatabase
 ) {
     private val pixabaySearchDao: PixabaySearchDao = pixabaySearchDb.pixabaySearchDao()
 

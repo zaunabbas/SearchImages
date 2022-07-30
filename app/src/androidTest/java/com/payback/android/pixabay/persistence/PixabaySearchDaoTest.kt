@@ -40,7 +40,7 @@ class PixabaySearchDaoTest {
     @Test
     fun query_for_apple(): Unit = runBlocking {
         val mockData = SearchResult.mock()
-        val searchQuery = ""
+        val searchQuery = "apple"
         var queryPosition = 1
         val searchQueryResult = mockData.map { mockSearch ->
             SearchQueryResult(

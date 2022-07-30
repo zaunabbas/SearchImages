@@ -28,10 +28,10 @@ class SearchViewModel @Inject constructor(
     val searchResult = currentQuery.flatMapLatest { query ->
         query.let {
             searchRepository.getSearchResultPaged(query, refreshOnInit)
-        } ?: emptyFlow()
+        }
     }.cachedIn(viewModelScope)
 
-    var refreshInProgress = false // boolean to Snackbar in SearchNews Fragment
+    var refreshInProgress = false
     var pendingScrollToTopAfterRefresh = false
     var newQueryInProgress = false
     var pendingScrollToTopAfterNewQuery = false

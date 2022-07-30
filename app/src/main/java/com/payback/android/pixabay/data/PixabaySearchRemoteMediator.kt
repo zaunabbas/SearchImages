@@ -10,8 +10,7 @@ import com.payback.android.pixabay.data.local.SearchQueryRemoteKey
 import com.payback.android.pixabay.data.local.SearchQueryResult
 import com.payback.android.pixabay.data.local.SearchResult
 import com.payback.android.pixabay.data.remote.Api
-import com.skydoves.sandwich.suspendOnError
-import com.skydoves.sandwich.suspendOnSuccess
+import com.skydoves.sandwich.*
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -42,9 +41,11 @@ class SearchNewsRemoteMediator(
             val response = pixabaySearchApi.searchImages(searchQuery, page)
             val serverSearchResult = arrayListOf<SearchResult>()
             response
-                .suspendOnSuccess {
+                .onSuccess {
                     serverSearchResult.addAll(data.result)
-                }
+                }.onFailure {
+                    throw IOException(message())
+                }.onError { throw IOException(message()) }
 
             pixabaySearchDb.withTransaction {
                 if (loadType == LoadType.REFRESH && serverSearchResult.isNotEmpty()) {

@@ -2,6 +2,7 @@ package com.payback.android.pixabay.data.remote
 
 import android.util.Log
 import com.payback.android.pixabay.BuildConfig
+import com.payback.android.pixabay.util.Constants.Companion.QUERY_PARAM_KEY
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -11,7 +12,7 @@ class RequestInterceptor : Interceptor {
         val originalHttpUrl = originalRequest.url
 
         val url = originalHttpUrl.newBuilder()
-            .addQueryParameter("key", BuildConfig.API_KEY)
+            .addQueryParameter(QUERY_PARAM_KEY, BuildConfig.API_KEY)
             .build()
 
         val request = originalRequest.newBuilder().url(url).build()

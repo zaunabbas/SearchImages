@@ -27,7 +27,7 @@ class DetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            searchResult = it.getSerializable(BundleConstants.imageData) as SearchResult
+            searchResult = it.getSerializable(BundleConstants.IMAGE_DATA) as SearchResult
         }
     }
 
@@ -52,6 +52,7 @@ class DetailFragment : Fragment() {
 
     private fun showDetails() {
         Glide.with(requireContext()).load(searchResult.largeImageURL)
+            .error(R.drawable.ic_baseline_broken_image_24)
             .into(binding.imageView)
 
         binding.tvLikesCount.text = searchResult.likes.toString()

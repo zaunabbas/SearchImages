@@ -20,8 +20,7 @@ object RepositoryModule {
     fun provideSearchRepository(
         api: Api,
         pixabaySearchDb: AppDatabase,
-        application: Application
     ): SearchRepository {
-        return SearchRepository(api, pixabaySearchDb, application)
+        return SearchRepository(api, pixabaySearchDb)
     }
 }
