@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PixabaySearch</string>
+    <string name="app_name">SearchImages</string>
     <string name="label_no_data_found">No Data Found.</string>
     <string name="label_empty_subtitle">Search images by typing the keywords.</string>
     <string name="ok">OK</string>
