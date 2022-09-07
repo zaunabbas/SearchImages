@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.payback.android.pixabay.view.ui.search.SearchFragment"
+        android:name="com.zacoding.android.pixabay.view.ui.search.SearchFragment"
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_details"
-        android:name="com.payback.android.pixabay.view.ui.detail.DetailFragment"
+        android:name="com.zacoding.android.pixabay.view.ui.detail.DetailFragment"
         android:label="@string/title_detail"
         tools:layout="@layout/fragment_detail" />
 </navigation>

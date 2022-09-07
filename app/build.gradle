@@ -8,12 +8,12 @@ plugins {
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.payback.android.pixabay"
+        applicationId "com.zacoding.android.pixabay"
         minSdkVersion 23
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "com.payback.android.pixabay.HiltTestRunner"
+        testInstrumentationRunner "com.zacoding.android.pixabay.HiltTestRunner"
 
         Properties properties = new Properties()
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
